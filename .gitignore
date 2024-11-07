@@ -1,4 +1,4 @@
 node_modules
 package-lock.json
-.env
+whimsi-general.env
 deployCommands.js
