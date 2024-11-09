@@ -4,7 +4,7 @@ import timeoutStore from '../util/timeoutStore.js'
 export default {
     data: new SlashCommandBuilder()
         .setName('close')
-        .setDescription('Close ticket')
+        .setDescription('Close ticket (General Support)')
         .addStringOption(option => 
             option.setName('timer')
                 .setDescription('Time until ticket closes (e.g. 10m for 10 minutes).')
