@@ -11,7 +11,7 @@ export default async (client) => {
 
         // Check if there's an existing ticket channel for this user (based on channel topic)
         const existingTicket = guild.channels.cache.find(
-            channel => channel.topic == message.author.id
+            channel => channel.topic == message.author.id && channel.parentId == "1302439814007619678"
         );
 
         // Existing ticket
