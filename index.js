@@ -2,6 +2,8 @@ import { Client, ActivityType, Partials, Collection, Events, GatewayIntentBits }
 import runFeatures from './util/runFeatures.js';
 import { config } from 'dotenv';
 import getFiles from './util/getFiles.js';
+import { fileURLToPath } from 'url';
+import path from 'node:path';
 
 config({ path: 'whimsi-general.env' });
 
@@ -26,7 +28,10 @@ const client = new Client({
 client.commands = new Collection(); // Store commands by name
 
 // Load command files from subdirectories in 'commands' and add to collection
-const commandFiles = getFiles(`${import.meta.dirname}/commands`, '.js');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const commandFiles = getFiles(`${__dirname}/commands`, '.js');
 for (const file of commandFiles) {
     const { default: command } = await import(file);
 	// Ensure each command has required properties before adding
