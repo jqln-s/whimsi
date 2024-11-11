@@ -1,5 +1,6 @@
 import { EmbedBuilder } from 'discord.js';
 import timeoutStore from '../util/timeoutStore.js'
+import TicketLog from '../schemas/ticketLog.js';
 
 export default {
     data: {
@@ -48,15 +49,30 @@ export default {
         );
 
         // Set up a timeout to delete the ticket and send the closure message after the cooldown
-        let timeoutID = setTimeout(() => {
+        let timeoutID = setTimeout(async () => {
             message.channel.delete();  // Delete the ticket channel
         
             // Send the closure notification to the user (if they can be found)
             try {
                 const user = message.client.users.cache.get(message.channel.topic);
                 user.send({ embeds: [thumbnailEmbed, userEmbed] });
-            } catch (e) {
-                console.error(e);  // Log any errors that occur when sending the message
+            } catch (error) {
+                console.error(error);
+            }
+
+            // Find the ticket log in the database and mark it as closed
+            try {
+                await TicketLog.findOneAndUpdate(
+                    {
+                        user_id: message.channel.topic,
+                        open: true
+                    },
+                    {
+                        open: false
+                    }
+                );
+            } catch (error) {
+                console.error('Error while updating ticket log: ' + error);
             }
         }, cooldown);
         

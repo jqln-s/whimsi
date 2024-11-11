@@ -1,9 +1,11 @@
+import TicketLog from '../schemas/ticketLog.js';
+
 export default {
     data: {
         name: ['reply', 'r']
     },
     async execute(message) {
-        const mainServer = message.client.guilds.cache.get(process.env.GUILDID);
+        const mainServer = message.client.guilds.cache.get(process.env.GUILD_ID);
 
         // Get the response message
         const args = message.content.split(' ');
@@ -22,5 +24,31 @@ export default {
         
         // Reply to the interaction with the same response, visible to the user who executed the command
         await message.reply(`**${message.author.username}**: ${response}`);
+
+        // Push reply to ticket log
+        try {
+            await TicketLog.findOneAndUpdate(
+                {
+                    user_id: message.channel.topic,
+                    open: true
+                },
+                {
+                    $push: {
+                        messages: {
+                            user_id: message.author.id,
+                            username: message.author.username,
+                            message: response,
+                            timestamp: new Date()
+                        }
+                    }
+                },
+                {
+                    upsert: true,
+                    new: true
+                }
+            );
+        } catch (error) {
+            console.log('Error while updating ticket log: ' + error);
+        }
     }        
 }

@@ -19,7 +19,6 @@ export default async (client) => {
             await command.execute(message);
         } catch (error) {
             console.error(error);
-            // Inform the user if there was an error during command execution
             message.reply('There was an error while executing this command!');
         }
     });

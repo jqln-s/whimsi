@@ -4,6 +4,7 @@ import { config } from 'dotenv';
 import getFiles from './util/getFiles.js';
 import { fileURLToPath } from 'url';
 import path from 'node:path';
+import mongoose from 'mongoose';
 
 config({ path: 'whimsi-general.env' });
 
@@ -47,6 +48,16 @@ for (const file of commandFiles) {
 client.on(Events.ClientReady, () => {
     console.log(`Logged in as ${client.user.tag}!`);
     runFeatures(client);
+
+    // Connect to mongoDB
+    mongoose.connect(process.env.MONGO_URI)
+        .then(() => {
+            console.log('Connected to MongoDB successfully!');
+        })
+        .catch((err) => {
+            console.error('Error connecting to MongoDB:', err);
+        });
+
     client.user.setActivity('Whimsi Woods', { type: ActivityType.Watching });
 });
 
