@@ -68,9 +68,9 @@ export default async (client) => {
                 { 
                     name: '\u200B',
                     value: 
-                        '**Reply:** Use /reply (message) to reply\n' +
-                        '**Alert:** Use /alert to get a ping when the user responds\n' +
-                        '**Close:** Use /close <duration> to close the ticket'
+                        '**Reply:** Use !reply <message> to reply\n' +
+                        '**Alert:** Use !alert to get a ping when the user responds\n' +
+                        '**Close:** Use !close [duration] to close the ticket'
                 }
             )
             .setImage('https://i.imgur.com/LRS6uCl.png');

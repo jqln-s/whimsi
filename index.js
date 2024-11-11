@@ -27,7 +27,7 @@ const client = new Client({
 
 client.commands = new Collection(); // Store commands by name
 
-// Load command files from subdirectories in 'commands' and add to collection
+// Load command files from 'commands' directory and add to collection
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -37,6 +37,7 @@ for (const file of commandFiles) {
 	// Ensure each command has required properties before adding
 	if ('data' in command && 'execute' in command) {
 		client.commands.set(command.data.name, command);
+		console.log(`!${command.data.name} loaded!`);
 	} else {
 		console.log(`[WARNING] The command file at ${file} is missing a required 'data' or 'execute' property.`);
 	}
@@ -47,30 +48,6 @@ client.on(Events.ClientReady, () => {
     console.log(`Logged in as ${client.user.tag}!`);
     runFeatures(client);
     client.user.setActivity('Whimsi Woods', { type: ActivityType.Watching });
-});
-
-// Handle slash commands
-client.on(Events.InteractionCreate, async (interaction) => {
-    if (!interaction.isChatInputCommand()) return;
-
-	const command = interaction.client.commands.get(interaction.commandName);
-
-	if (!command) {
-		console.error(`No command matching ${interaction.commandName} was found.`);
-		return;
-	}
-
-	try {
-		await command.execute(interaction);
-	} catch (error) {
-		console.error(error);
-		// Send an error message if command execution fails
-		if (interaction.replied || interaction.deferred) {
-			await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
-		} else {
-			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-		}
-	}
 });
 
 // Log in to Discord
