@@ -37,8 +37,8 @@ export default {
             .setAuthor({ name: message.author.username, iconURL: message.author.avatarURL() })
             .setTitle('⋆｡‧˚ʚ Support Ticket ɞ˚‧｡⋆')
             .setDescription(
-                `This ticket has been **closed** by <@${message.author.id}>.\n\n
-                If you have any other concerns, you can make a new ticket by dming this bot again.`)
+                `This ticket has been **closed** by <@${message.author.id}>.\n\n` +
+                'If you have any other concerns, you can make a new ticket by dming this bot again.')
             .setImage('https://i.imgur.com/LRS6uCl.png');
         
         // Inform the user about the time left before the ticket closes and how to cancel
