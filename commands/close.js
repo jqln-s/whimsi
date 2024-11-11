@@ -7,8 +7,8 @@ export default {
         .setDescription('Close ticket (General Support)')
         .addStringOption(option => 
             option.setName('timer')
-                .setDescription('Time until ticket closes (e.g. 10m for 10 minutes).')
-                .setRequired(false)
+                .setDescription('Time until ticket closes (e.g. 10s for 10 seconds).')
+                .setRequired(true)
         )
         .addStringOption(option =>
             option.setName('reason')
@@ -19,8 +19,8 @@ export default {
             if (interaction.channel.parentId != '1302439814007619678') {
                 return interaction.reply('This command can only be used in general tickets.');
             }
-            // Get the timer option (default to 10 seconds if not provided)
-            let timer = interaction.options.getString('timer') || '10s';
+            // Get the timer option 
+            let timer = interaction.options.getString('timer');
             
             // Get the reason for closing the ticket (if provided)
             let reason = interaction.options.getString('reason') ? ` because: \`${interaction.options.getString('reason')}\`` : '. ';
