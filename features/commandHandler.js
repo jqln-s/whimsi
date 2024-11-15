@@ -3,7 +3,7 @@ import { Events } from 'discord.js';
 export default async (client) => {
     client.on(Events.MessageCreate, async (message) => {
         // Ignore messages that don't start with '!', are from bots, or aren't in the specified channel category
-        if (!message.content.startsWith('!') || message.author.bot || message.channel.parentId != '1302439814007619678') return;
+        if (!message.content.startsWith('!') || message.author.bot || message.channel.parentId != process.env.CATEGORY_ID) return;
     
         // Split message content into arguments and parse the command name (e.g., "!Command" becomes "command")
         const args = message.content.split(' ');

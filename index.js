@@ -1,12 +1,12 @@
 import { Client, ActivityType, Partials, Collection, Events, GatewayIntentBits } from 'discord.js';
 import runFeatures from './util/runFeatures.js';
-import { config } from 'dotenv';
+import dotenv from 'dotenv';
 import getFiles from './util/getFiles.js';
 import { fileURLToPath } from 'url';
 import path from 'node:path';
 import mongoose from 'mongoose';
 
-config({ path: 'whimsi-general.env' });
+dotenv.config();
 
 // Initialize a Discord client with specific intents and partials for bot functionality
 const client = new Client({

@@ -1,3 +1,4 @@
+import { EmbedBuilder } from 'discord.js';
 import TicketLog from '../schemas/ticketLog.js';
 
 export default {
@@ -27,27 +28,37 @@ export default {
         try {
             // Fetch closed ticket logs for the given user
             const docs = await TicketLog.find({ user_id, open: false });
-            if (docs.length === 0) {
+            if (docs.length == 0) {
                 // No logs found for the user
                 return message.reply(`No logs found for <@${user_id}>.`);
             } else {
                 // Map the results to extract relevant info (log ID and timestamp)
                 ids = docs.map(doc => ({
                     _id: doc._id,
-                    timestamp: doc.messages[0].timestamp
+                    timestamp: doc.messages[0].timestamp,
+                    type: doc.ticket_type
                 }));
             }
         } catch (error) {
             console.error('Error while fetching ticket log: ' + error);
         }
         
-        // Build a string of log file references
-        let txt = '';
-        ids.forEach(pair => {
-            txt += `\`${pair.timestamp.toLocaleString()}\`: View log with \`!log ${pair._id}\`\n`;
+        // Build an array of log file reference fields
+        ids.sort((a, b) => b.timestamp - a.timestamp);
+        let logs = [];
+        ids.forEach(obj => {
+            logs.push(
+                {
+                    name: obj.type,
+                    value: `<t:${Math.floor(obj.timestamp / 1000)}>:\nView log with \`!log ${obj._id}\``
+                }
+            )
         });
 
         // Send the log file references as a message
-        message.channel.send(`**Log files for <@${user_id}>:**\n${txt}`);
+        const embed = new EmbedBuilder()
+            .setColor(0x69e7e6)
+            .addFields(logs);
+        message.channel.send({ content: `**Log files for <@${user_id}>:**`, embeds: [embed] });
     }
 }

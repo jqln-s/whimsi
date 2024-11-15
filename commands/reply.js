@@ -37,8 +37,7 @@ export default {
                         messages: {
                             user_id: message.author.id,
                             username: message.author.username,
-                            message: response,
-                            timestamp: new Date()
+                            message: response
                         }
                     }
                 },

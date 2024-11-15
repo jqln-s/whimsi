@@ -21,8 +21,8 @@ const ticketLogSchema = new Schema({
                 required: true
             },
             timestamp: {
-                type: Date,  // Timestamp for when the message was sent
-                default: Date.now
+                type: Number,  // Timestamp for when the message was sent
+                default: () => Date.now()
             }
         }
     ],

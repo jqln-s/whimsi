@@ -4,7 +4,7 @@ import TicketLog from '../schemas/ticketLog.js';
 
 export default {
     data: {
-        name: ['close']
+        name: ['close', 'c']
     },
     async execute(message) {
         // Get the timer option 

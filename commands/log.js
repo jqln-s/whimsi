@@ -24,7 +24,8 @@ export default {
             let txt = '';
             log.messages.forEach(msg => {
                 // Format each log message with its timestamp and sender
-                txt += `[${msg.timestamp.toLocaleString()}] [${msg.username}] ${msg.message}\n`;
+                const timestamp = new Date(msg.timestamp).toLocaleString();
+                txt += `[${timestamp}] [${msg.username}] ${msg.message}\n`;
             });
 
             // Convert the log text into a Buffer for file attachment
