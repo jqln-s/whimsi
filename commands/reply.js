@@ -23,7 +23,7 @@ export default {
         user.send(`**[${message.member.roles.highest.name}]** <@${message.author.id}>: ${response}`);
         
         // Reply to the interaction with the same response, visible to the user who executed the command
-        await message.reply(`**${message.author.username}**: ${response}`);
+        await message.channel.send(`**${message.author.username}**: ${response}`);
 
         // Push reply to ticket log
         try {

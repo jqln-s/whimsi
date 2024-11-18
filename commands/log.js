@@ -16,7 +16,7 @@ export default {
             const log = await TicketLog.findById(_id);
             if (!log) {
                 // If the log is not found, notify the user
-                message.reply('Invalid ticket ID.');
+                message.channel.send('Invalid ticket ID.');
                 return;
             }
 

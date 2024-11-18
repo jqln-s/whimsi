@@ -20,7 +20,7 @@ export default {
 
         // If user isn't found, reply with usage instructions
         if (!user) {
-            return message.reply('Usage: !logs <user_id>');
+            return message.channel.send('Usage: !logs <user_id>');
         }
 
         let ids = [];
@@ -30,7 +30,7 @@ export default {
             const docs = await TicketLog.find({ user_id, open: false });
             if (docs.length == 0) {
                 // No logs found for the user
-                return message.reply(`No logs found for <@${user_id}>.`);
+                return message.channel.send(`No logs found for <@${user_id}>.`);
             } else {
                 // Map the results to extract relevant info (log ID and timestamp)
                 ids = docs.map(doc => ({

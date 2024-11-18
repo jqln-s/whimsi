@@ -10,10 +10,10 @@ export default {
             // Clear the timeout if it exists
             timeoutStore.clearTimeoutID(message.channel.topic);
             // Notify the user that the timeout was cancelled
-            message.reply('Timeout cancelled!');
+            message.channel.send('Timeout cancelled!');
         } else {
             // Inform the user if no active timeout was found
-            message.reply('No active timeout found for this ticket.');
+            message.channel.send('No active timeout found for this ticket.');
         }
     }
 }

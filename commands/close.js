@@ -43,7 +43,7 @@ export default {
             .setImage('https://i.imgur.com/LRS6uCl.png');
         
         // Inform the user about the time left before the ticket closes and how to cancel
-        message.reply(
+        message.channel.send(
             `Ticket closing in ${parseInt(timer)} ${unit}...
             \nUse \`!cancel\` to cancel the ticket closing.`
         );

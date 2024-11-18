@@ -17,6 +17,9 @@ export default async (client) => {
         try {
             // Attempt to execute the command with the given message
             await command.execute(message);
+
+            // Delete original command
+            message.delete();
         } catch (error) {
             console.error(error);
             message.reply('There was an error while executing this command!');
