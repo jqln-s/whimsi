@@ -71,7 +71,7 @@ export default async (client) => {
         }
 
         // Find previous tickets
-        let text = '';
+        let text = 'User has no previous tickets.';
             try {
                 // Fetch closed ticket logs for the given user
                 const logs = await TicketLog.find({ user_id: message.author.id, open: false });
