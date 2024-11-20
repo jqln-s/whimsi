@@ -13,6 +13,12 @@ export default async (client) => {
         const command = message.client.commands.find(cmd => cmd.data.name.some(name => name === commandName));
     
         if (!command) return;  // Exit if the command is not found
+
+        // Check for permissions
+        if (command.data.permission && !message.member.permissions.has(command.data.permission)) {
+            message.reply("You do not have permission to use this command.");
+            return;
+        }
     
         try {
             // Attempt to execute the command with the given message

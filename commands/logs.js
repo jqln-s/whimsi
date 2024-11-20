@@ -1,9 +1,10 @@
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder, PermissionFlagsBits } from 'discord.js';
 import TicketLog from '../schemas/ticketLog.js';
 
 export default {
     data: {
-        name: ['logs']
+        name: ['logs'],
+        permission: PermissionFlagsBits.ViewAuditLog
     },
     async execute(message) {
         // Split the message into arguments and remove the command part

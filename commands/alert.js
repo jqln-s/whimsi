@@ -2,7 +2,7 @@ import alertStore from '../util/alertStore.js';
 
 export default {
     data: {
-        name: ['alert']
+        name: ['alert', 'a']
     },
     execute(message) {
         // Register the user's alert in the channel by storing the channel ID and user ID

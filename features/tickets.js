@@ -147,7 +147,7 @@ export default async (client) => {
             userEmbed = higherUpEmbed;
         }
         
-        // Create a new private channel for the support ticket and set permissions
+        // Create a new private channel for the support ticket
         await staffServer.channels.create({
             name: message.author.username,  // Channel name as the user's username
             parent: process.env.CATEGORY_ID,  // Parent category ID

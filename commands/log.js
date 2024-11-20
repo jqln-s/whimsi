@@ -1,8 +1,10 @@
+import { PermissionFlagsBits } from 'discord.js';
 import TicketLog from '../schemas/ticketLog.js';
 
 export default {
     data: {
-        name: ['log']
+        name: ['log'],
+        permission: PermissionFlagsBits.ViewAuditLog
     },
     async execute(message) {
         // Split the message content into arguments and remove the command itself
