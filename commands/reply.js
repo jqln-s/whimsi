@@ -10,7 +10,6 @@ export default {
         // Get the response message
         const args = message.content.split(' ');
         args.shift();
-
         const response = args.join(' ');
         
         // Retrieve the user associated with the ticket channel (stored in the channel's topic)
@@ -18,12 +17,17 @@ export default {
         if (!user) {
             user = await mainServer.members.fetch(message.channel.topic);
         }
+
+        // Specify message number for future reference
+        const ticket = await TicketLog.findOne({ user_id: message.channel.topic, open: true });
+        const staffMessages = ticket.messages.filter(msg => msg.message_number != undefined);
+        const messageNumber = staffMessages.length > 0 ? staffMessages[staffMessages.length - 1].message_number + 1 : 1;
         
         // Send the response to the user (mentioning the user and including the response)
-        user.send(`**[${message.member.roles.highest.name}]** <@${message.author.id}>: ${response}`);
-        
+        const userMessage = await user.send(`**[${message.member.roles.highest.name}]** <@${message.author.id}>: ${response}`);
+
         // Reply to the interaction with the same response, visible to the user who executed the command
-        await message.channel.send(`**${message.author.username}**: ${response}`);
+        const staffMessage = await message.channel.send(`\`${messageNumber}\` **${message.author.username}**: ${response}`);
 
         // Push reply to ticket log
         try {
@@ -35,9 +39,11 @@ export default {
                 {
                     $push: {
                         messages: {
-                            user_id: message.author.id,
                             username: message.author.username,
-                            message: response
+                            message: response,
+                            message_number: messageNumber,
+                            user_message_id: userMessage.id,
+                            staff_message_id: staffMessage.id
                         }
                     }
                 },
@@ -47,7 +53,7 @@ export default {
                 }
             );
         } catch (error) {
-            console.log('Error while updating ticket log: ' + error);
+            console.error('Error while updating ticket log: ' + error);
         }
     }        
 }

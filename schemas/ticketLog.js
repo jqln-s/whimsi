@@ -8,10 +8,6 @@ const ticketLogSchema = new Schema({
     },
     messages: [
         {
-            user_id: {
-                type: String,  // ID of the user sending the message
-                required: true
-            },
             username: {
                 type: String,  // Username of the person sending the message
                 required: true
@@ -23,6 +19,18 @@ const ticketLogSchema = new Schema({
             timestamp: {
                 type: Number,  // Timestamp for when the message was sent
                 default: () => Date.now()
+            },
+            message_number: {
+                type: Number,  // Incrementing message number for staff messages
+                required: false // Only present for staff messages
+            },
+            user_message_id: {
+                type: String,
+                required: false
+            },
+            staff_message_id: {
+                type: String,
+                required: false
             }
         }
     ],
