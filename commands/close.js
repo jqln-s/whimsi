@@ -10,10 +10,10 @@ export default {
         // Get the timer option 
         const args = message.content.split(' ');
         args.shift();
-        let timer = args[0] || '10s';
+        let timer = args[0] || '15m';
         
-        // Validate and parse the timer, defaulting to '10 seconds'
-        timer = parseInt(timer) ? timer : '10s';
+        // Validate and parse the timer, defaulting to '15 minutes'
+        timer = parseInt(timer) ? timer : '15m';
         let cooldown = parseInt(timer);
         let unit = 'second(s)';
             
