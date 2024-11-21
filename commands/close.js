@@ -48,10 +48,11 @@ export default {
             \nUse \`!cancel\` to cancel the ticket closing.`
         );
 
+        let user = await message.client.users.cache.get(message.channel.topic);
+
         // Set up a timeout to delete the ticket and send the closure message after the cooldown
         let timeoutID = setTimeout(async () => {
             // Send the closure notification to the user (if they can be found)
-            let user = await message.client.users.cache.get(message.channel.topic);
             if (!user) {
                 user = await message.client.users.fetch(message.channel.topic);
             }
