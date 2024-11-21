@@ -36,6 +36,9 @@ export default async (client) => {
                 existingTicket.send(`<@${message.author.id}>: ${message.content}`);
             }
 
+            // React to message to let user know it's been sent
+            message.react('1300523340427038720');
+
             // Push new messages to ticket log
             try {
                 await TicketLog.findOneAndUpdate(
