@@ -50,11 +50,13 @@ export default {
 
         let user = await message.client.users.cache.get(message.channel.topic);
 
+        const channel = message.channel;
+
         // Set up a timeout to delete the ticket and send the closure message after the cooldown
         let timeoutID = setTimeout(async () => {
             // Send the closure notification to the user (if they can be found)
             if (!user) {
-                user = await message.client.users.fetch(message.channel.topic);
+                user = await message.client.users.fetch(channel.topic);
             }
             if (!user) {
                 console.error('User not found');
@@ -67,13 +69,13 @@ export default {
                 console.error(error);
             }
 
-            message.channel.delete();  // Delete the ticket channel
+            channel.delete();  // Delete the ticket channel
 
             // Find the ticket log in the database and mark it as closed
             try {
                 await TicketLog.findOneAndUpdate(
                     {
-                        user_id: message.channel.topic,
+                        user_id: channel.topic,
                         ticket_type: process.env.BOT_TYPE,
                         open: true
                     },
@@ -87,6 +89,6 @@ export default {
         }, cooldown);
         
         // Store the timeout ID associated with the channel's topic for future reference (e.g., cancel)
-        timeoutStore.setTimeoutID(message.channel.id, timeoutID);
+        timeoutStore.setTimeoutID(channel.id, timeoutID);
     }
 }
