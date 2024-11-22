@@ -6,9 +6,9 @@ export default {
     },
     execute(message) {
         // Check if there is an active timeout associated with the channel's topic
-        if (timeoutStore.getTimeoutID(message.channel.topic)) {
+        if (timeoutStore.getTimeoutID(message.channel.id)) {
             // Clear the timeout if it exists
-            timeoutStore.clearTimeoutID(message.channel.topic);
+            timeoutStore.clearTimeoutID(message.channel.id);
             // Notify the user that the timeout was cancelled
             message.channel.send('Timeout cancelled!');
         } else {

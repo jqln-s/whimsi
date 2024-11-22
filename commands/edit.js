@@ -18,7 +18,7 @@ export default {
         }
 
         // Find the current ticket
-        const ticket = await TicketLog.findOne({ user_id: message.channel.topic, open: true });
+        const ticket = await TicketLog.findOne({ user_id: message.channel.topic, ticket_type: process.env.BOT_TYPE, open: true });
         if (!ticket) {
             message.channel.send('No open ticket found for this channel.');
             return;

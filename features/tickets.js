@@ -52,6 +52,7 @@ export default async (client) => {
                 await TicketLog.findOneAndUpdate(
                     { 
                         user_id: message.author.id,
+                        ticket_type: process.env.BOT_TYPE,
                         open: true
                     },
                     {

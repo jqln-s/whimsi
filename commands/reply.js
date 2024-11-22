@@ -19,7 +19,7 @@ export default {
         }
 
         // Specify message number for future reference
-        const ticket = await TicketLog.findOne({ user_id: message.channel.topic, open: true });
+        const ticket = await TicketLog.findOne({ user_id: message.channel.topic, ticket_type: process.env.BOT_TYPE, open: true });
         const staffMessages = ticket.messages.filter(msg => msg.message_number != undefined);
         const messageNumber = staffMessages.length > 0 ? staffMessages[staffMessages.length - 1].message_number + 1 : 1;
         
@@ -34,6 +34,7 @@ export default {
             await TicketLog.findOneAndUpdate(
                 {
                     user_id: message.channel.topic,
+                    ticket_type: process.env.BOT_TYPE,
                     open: true
                 },
                 {

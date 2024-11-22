@@ -74,6 +74,7 @@ export default {
                 await TicketLog.findOneAndUpdate(
                     {
                         user_id: message.channel.topic,
+                        ticket_type: process.env.BOT_TYPE,
                         open: true
                     },
                     {
@@ -86,6 +87,6 @@ export default {
         }, cooldown);
         
         // Store the timeout ID associated with the channel's topic for future reference (e.g., cancel)
-        timeoutStore.setTimeoutID(message.channel.topic, timeoutID);
+        timeoutStore.setTimeoutID(message.channel.id, timeoutID);
     }
 }
