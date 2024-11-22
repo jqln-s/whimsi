@@ -1,20 +1,38 @@
-const alerts = {};
+import Alert from '../schemas/alert.js';
 
 export default {
-    addAlert(channelID, userID) {
-        // Initialize an array if no alerts exist for the channel yet
-        if (!alerts[channelID]) {
-            alerts[channelID] = [];
+    async addAlert(ticket_id, user_id) {
+        // Add user to the alert list for ticket
+        return await Alert.findOneAndUpdate(
+            {
+                ticket_id
+            },
+            {
+                $push: {
+                    user_ids: {
+                        user_id
+                    }
+                }
+            },
+            {
+                upsert: true,
+                new: true
+            }
+        );
+    },
+
+    async getAlerts(ticket_id) {
+        // Retrieve the user IDs for a specific channel's alerts
+        const alerts = await Alert.findOne({ ticket_id });
+        if (alerts) {
+            return alerts.user_ids;
+        } else {
+            return [];
         }
-        // Add the userID to the array for this channel
-        alerts[channelID].push(userID);
     },
-    getAlerts(channelID) {
-        // Retrieve the array of user IDs for a specific channel's alerts
-        return alerts[channelID] || [];
-    },
-    removeAlerts(channelID) {
+
+    async removeAlerts(ticket_id) {
         // Remove all alerts for a channel after they have triggered
-        delete alerts[channelID];
+        return await Alert.deleteOne({ ticket_id });
     }
 };

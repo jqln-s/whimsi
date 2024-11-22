@@ -4,62 +4,73 @@ import TicketLog from '../schemas/ticketLog.js';
 export default {
     data: {
         name: ['logs'],
-        permission: PermissionFlagsBits.ViewAuditLog
+        permission: PermissionFlagsBits.ViewAuditLog,
+        deleteMessage: true
     },
     async execute(message) {
-        // Split the message into arguments and remove the command part
-        const args = message.content.split(' ');
-        args.shift();
+        // Split the message content and remove the command part
+        const args = message.content.split(' ').slice(1); // Shift removes command name
 
-        const user_id = args[0];  // Get the user ID from the argument
+        const user_id = args[0]; // Extract user ID from the arguments
 
-        // Try to fetch the user from the client cache or directly from Discord if not cached
-        let user = message.client.users.cache.get(user_id);
-        if (!user) {
-            user = await message.client.users.fetch(user_id);
+        // Validate the user ID argument
+        if (!user_id) {
+            return message.channel.send('Usage: `!logs <userID>`');
         }
 
-        // If user isn't found, reply with usage instructions
-        if (!user) {
-            return message.channel.send('Usage: !logs <user_id>');
-        }
-
-        let ids = [];
+        let user;
 
         try {
-            // Fetch closed ticket logs for the given user
-            const docs = await TicketLog.find({ user_id, open: false });
-            if (docs.length == 0) {
-                // No logs found for the user
-                return message.channel.send(`No logs found for <@${user_id}>.`);
-            } else {
-                // Map the results to extract relevant info (log ID and timestamp)
-                ids = docs.map(doc => ({
-                    _id: doc._id,
-                    timestamp: doc.messages[0].timestamp,
-                    type: doc.ticket_type
-                }));
+            // Fetch the user from the cache or directly from Discord API if not cached
+            user = message.client.users.cache.get(user_id);
+            if (!user) {
+                user = await message.client.users.fetch(user_id);
+            }
+
+            if (!user) {
+                return message.channel.send(`User with ID \`${user_id}\` not found.`);
             }
         } catch (error) {
-            console.error('Error while fetching ticket log: ' + error);
+            console.error('Error fetching user:', error);
+            return message.channel.send('An error occurred while fetching the user.');
         }
-        
-        // Build an array of log file reference fields
-        ids.sort((a, b) => b.timestamp - a.timestamp);
-        let logs = [];
-        ids.forEach(obj => {
-            logs.push(
-                {
-                    name: obj.type,
-                    value: `<t:${Math.floor(obj.timestamp / 1000)}:f>:\nView log with \`!log ${obj._id}\``
-                }
-            )
-        });
 
-        // Send the log file references as a message
+        let ticketLogs = [];
+
+        try {
+            // Fetch the closed tickets for the given user
+            const docs = await TicketLog.find({ user_id, open: false });
+            if (docs.length === 0) {
+                return message.channel.send(`No logs found for <@${user_id}>.`);
+            }
+
+            // Format logs with the necessary details
+            ticketLogs = docs.map(doc => ({
+                _id: doc._id,
+                timestamp: doc.messages[0].timestamp,
+                type: doc.ticket_type
+            }));
+
+            // Sort logs by timestamp in descending order
+            ticketLogs.sort((a, b) => b.timestamp - a.timestamp);
+        } catch (error) {
+            console.error('Error fetching ticket logs:', error);
+            return message.channel.send('An error occurred while fetching the ticket logs.');
+        }
+
+        // Build the fields for the embed
+        const logFields = ticketLogs.map(log => ({
+            name: log.type,
+            value: `<t:${Math.floor(log.timestamp / 1000)}:f>:\nView log with \`!log ${log._id}\``
+        }));
+
+        // Create the embed message to display the log files
         const embed = new EmbedBuilder()
             .setColor(0x69e7e6)
-            .addFields(logs);
-        message.channel.send({ content: `**Log files for <@${user_id}>:**`, embeds: [embed] });
+            .addFields(logFields)
+            .setTimestamp();
+
+        // Send the embed with the list of logs
+        message.channel.send({ content: `**Log files for <@${user_id}>**:`, embeds: [embed] });
     }
-}
+};

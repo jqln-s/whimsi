@@ -4,47 +4,51 @@ import TicketLog from '../schemas/ticketLog.js';
 export default {
     data: {
         name: ['log'],
-        permission: PermissionFlagsBits.ViewAuditLog
+        permission: PermissionFlagsBits.ViewAuditLog,
+        deleteMessage: true
     },
     async execute(message) {
-        // Split the message content into arguments and remove the command itself
-        const args = message.content.split(' ');
-        args.shift();
-
-        const _id = args[0];  // The ticket ID is the first and only argument
-
         try {
-            // Try to find the ticket log by its ID in the database
-            const log = await TicketLog.findById(_id);
-            if (!log) {
-                // If the log is not found, notify the user
-                message.channel.send('Invalid ticket ID.');
-                return;
+            // Parse command arguments and validate input
+            const args = message.content.split(' ').slice(1); // Remove command name
+            const ticketID = args[0];
+
+            if (!ticketID) {
+                return message.channel.send('Please provide a ticket ID. Usage: `!log <ticketID>`');
             }
 
-            // Construct the text from the log messages
-            let txt = '';
-            log.messages.forEach(msg => {
-                // Format each log message with its timestamp and sender
-                const timestamp = new Date(msg.timestamp).toLocaleString();
-                const messageNumber = msg.message_number ? msg.message_number : '-';
+            // Fetch the ticket log from the database
+            const log = await TicketLog.findById(ticketID);
+            if (!log) {
+                return message.channel.send('Ticket log not found.');
+            }
 
-                txt += `[${timestamp}] ${messageNumber} [${msg.username}] ${msg.message}\n`;
+            // Build the log content
+            let logText = '';
+            log.messages.forEach(msg => {
+                const timestamp = new Date(msg.timestamp).toLocaleString();
+                const messageNumber = msg.message_number ? `#${msg.message_number}` : '-';
+                logText += `[${timestamp}] ${messageNumber} [${msg.username}]: ${msg.message}\n`;
             });
 
-            // Convert the log text into a Buffer for file attachment
-            const attachment = Buffer.from(txt, 'utf-8');
+            if (!logText) {
+                return message.channel.send('This ticket contains no messages.');
+            }
 
-            // Send the log file as an attachment
-            message.channel.send({
+            // Create a file buffer for the log
+            const attachment = Buffer.from(logText, 'utf-8');
+
+            // Send the log as a file attachment
+            await message.channel.send({
                 files: [{
                     attachment,
-                    name: `${_id}.txt`
+                    name: `${ticketID}-log.txt`
                 }]
             });
 
         } catch (error) {
-            console.error('Error while fetching ticket log: ' + error);
+            console.error('Error while fetching or sending ticket log:', error);
+            message.channel.send('An error occurred while fetching the ticket log.');
         }
     }
-}
+};
