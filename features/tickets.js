@@ -19,6 +19,14 @@ export default async (client) => {
 
         // Existing ticket
         if (existingTicket) {
+            // Append attachments
+            let content = message.content;
+            if (message.attachments) {
+                for (const attachment of message.attachments) {
+                    content += attachment[1].url;
+                }
+            }
+
             // Check if there are any staff members to alert of new message
             const alertIDs = alertStore.getAlerts(existingTicket.id);
             if (alertIDs.length > 0) {
@@ -29,11 +37,11 @@ export default async (client) => {
                 });
 
                 // Send the user's message with alerts
-                existingTicket.send(`<@${message.author.id}>: ${message.content}\n\n${pings}`);
+                existingTicket.send(`<@${message.author.id}>: ${content}\n\n${pings}`);
                 alertStore.removeAlerts(existingTicket.id);  // Clear alerts after sending
             } else {
                 // If no alerts, just send the user's message
-                existingTicket.send(`<@${message.author.id}>: ${message.content}`);
+                existingTicket.send(`<@${message.author.id}>: ${content}`);
             }
 
             // React to message to let user know it's been sent
@@ -51,7 +59,7 @@ export default async (client) => {
                             messages: {
                                 user_id: message.author.id,
                                 username: message.author.username,
-                                message: message.content
+                                message: content
                             }
                         }
                     },
@@ -71,6 +79,14 @@ export default async (client) => {
         let member = mainServer.members.cache.get(message.author.id);
         if (!member) {
             member = await mainServer.members.fetch(message.author.id);
+        }
+
+        // Append attachments
+        let content = message.content;
+        if (message.attachments) {
+            for (const attachment of message.attachments) {
+                content += attachment[1].url;
+            }
         }
 
         // Find previous tickets
@@ -163,7 +179,7 @@ export default async (client) => {
 
             // Send the staff embed in the new ticket channel
             channel.send({ embeds: [thumbnailEmbed, staffEmbed] });
-            channel.send(`<@${message.author.id}>: ${message.content}`);
+            channel.send(`<@${message.author.id}>: ${content}`);
         });
 
         // Create new ticket log
@@ -174,7 +190,7 @@ export default async (client) => {
                     {
                         user_id: message.author.id,
                         username: message.author.username,
-                        message: message.content
+                        message: content
                     }
                 ],
                 ticket_type: process.env.BOT_TYPE,

@@ -51,7 +51,7 @@ export default {
             logs.push(
                 {
                     name: obj.type,
-                    value: `<t:${Math.floor(obj.timestamp / 1000)}>:\nView log with \`!log ${obj._id}\``
+                    value: `<t:${Math.floor(obj.timestamp / 1000)}:f>:\nView log with \`!log ${obj._id}\``
                 }
             )
         });
