@@ -3,6 +3,7 @@ import TicketLog from '../schemas/ticketLog.js';
 import alertService from '../services/alertService.js';
 import embedService from '../services/embedService.js';
 import ticketService from '../services/ticketService.js';
+import timeoutStore from '../util/timeoutStore.js';
 
 export default async (client) => {
     // Fetch the servers by ID
@@ -30,6 +31,12 @@ export default async (client) => {
         if (existingTicket) {
             await alertService.sendMessage(existingTicket, content, message.author.id);
             await ticketService.updateTicketLog(message.author.id, message.author.username, content);
+
+            // Cancel timeout when user responds
+            if (timeoutStore.getTimeoutID(existingTicket.id)) {
+                timeoutStore.clearTimeoutID(existingTicket.id);
+                existingTicket.send('Timeout cancelled!');
+            }
 
             // React to message to let user know it's been sent
             message.react('1300523340427038720');
