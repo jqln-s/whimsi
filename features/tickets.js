@@ -33,8 +33,8 @@ export default async (client) => {
             await ticketService.updateTicketLog(message.author.id, message.author.username, content);
 
             // Cancel timeout when user responds
-            if (timeoutStore.getTimeoutID(existingTicket.id)) {
-                timeoutStore.clearTimeoutID(existingTicket.id);
+            if (await timeoutStore.getTimeout(existingTicket.id)) {
+                await timeoutStore.deleteTimeout(existingTicket.id);
                 existingTicket.send('Timeout cancelled!');
             }
 
