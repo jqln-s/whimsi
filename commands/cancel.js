@@ -5,16 +5,16 @@ export default {
         name: ['cancel'],
         deleteMessage: true
     },
-    execute(message) {
+    async execute(message) {
         try {
             const channelID = message.channel.id;
 
             // Check if a timeout exists for the current channel
-            const timeoutID = timeoutStore.getTimeoutID(channelID);
+            const timeout = await timeoutStore.getTimeout(channelID);
 
-            if (timeoutID) {
-                // Clear the active timeout
-                timeoutStore.clearTimeoutID(channelID);
+            if (timeout) {
+                // Delete the active timeout
+                await timeoutStore.deleteTimeout(channelID);
 
                 // Notify the user
                 return message.channel.send('Timeout cancelled!');

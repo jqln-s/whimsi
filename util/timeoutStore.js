@@ -1,29 +1,34 @@
-const timeouts = {};  // Store active timeouts by a unique key
+import Timeout from '../schemas/timeout.js';
 
 export default {
-    // Set a timeout ID for a specific key (e.g., channel/topic ID)
-    setTimeoutID(key, id) {
-        timeouts[key] = id;
-    },
-
-    // Retrieve the timeout ID associated with a specific key
-    getTimeoutID(key) {
-        return timeouts[key];
-    },
-
-    // Clear the timeout associated with a specific key and delete the entry
-    clearTimeoutID(key) {
-        if (timeouts[key]) {
-            clearTimeout(timeouts[key]);  // Cancel the timeout
-            delete timeouts[key];  // Remove the timeout from the store
+    // Set a timeout for a specific channel
+    async setTimeout(channelID, cooldown) {
+        try {
+            // Create a new timeout
+            const timeout = new Timeout({
+                ticket_id: channelID,
+                execute_at: Date.now() + cooldown
+            });
+            await timeout.save();
+        } catch (error) {
+            console.error('Error while making new timeout: ', error);
         }
     },
 
-    // Clear all active timeouts and remove them from the store
-    clearAllTimeouts() {
-        for (const key in timeouts) {
-            clearTimeout(timeouts[key]);  // Cancel each timeout
-            delete timeouts[key];  // Remove each timeout from the store
+    // Retrieve the timeout associated with a specific channel
+    async getTimeout(channelID) {
+        const timeout = await Timeout.findOne({ ticket_id: channelID });
+        return timeout;
+    },
+
+    // Clear the timeout associated with a specific channel and delete it
+    async deleteTimeout(channelID) {
+        if (await this.getTimeout(channelID)) {
+            try {
+                await Timeout.deleteOne({ ticket_id: channelID });
+            } catch (error) {
+                console.error('Error while deleting timeout: ', error);
+            }
         }
     }
 };
