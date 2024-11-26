@@ -5,7 +5,8 @@ export default {
     data: {
         name: ['logs'],
         permission: PermissionFlagsBits.ViewAuditLog,
-        deleteMessage: true
+        deleteMessage: true,
+        whitelistedChannelIDs: ['1298122953401176165']
     },
     async execute(message) {
         // Split the message content and remove the command part
