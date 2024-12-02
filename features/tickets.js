@@ -29,8 +29,13 @@ export default async (client) => {
 
         // Handle existing ticket
         if (existingTicket) {
-            await alertService.sendMessage(existingTicket, content, message.author.id);
-            await ticketService.updateTicketLog(message.author.id, message.author.username, content);
+            try {
+                await alertService.sendMessage(existingTicket, content, message.author.id);
+                await ticketService.updateTicketLog(message.author.id, message.author.username, content);
+            } catch (error) {
+                console.error('Error while sending message in existing ticket: ', error);
+                message.channel.send('Error occurred while sending message! Try again later.')
+            }
 
             // Cancel timeout when user responds
             if (await timeoutStore.getTimeout(existingTicket.id)) {
@@ -78,12 +83,17 @@ export default async (client) => {
                 parent: process.env.CATEGORY_ID,  // Parent category ID
                 topic: message.author.id  // Channel topic set to user ID
             }).then((channel) => {
-                // Send a confirmation message to the user who opened the ticket
-                message.channel.send({ embeds: [thumbnailEmbed, userEmbed] });
+                try {
+                    // Send a confirmation message to the user who opened the ticket
+                    message.channel.send({ embeds: [thumbnailEmbed, userEmbed] });
 
-                // Send the staff embed in the new ticket channel
-                channel.send({ embeds: [thumbnailEmbed, staffEmbed] });
-                channel.send(`<@${message.author.id}>: ${content}`);
+                    // Send the staff embed in the new ticket channel
+                    channel.send({ embeds: [thumbnailEmbed, staffEmbed] });
+                    channel.send(`<@${message.author.id}>: ${content}`);
+                } catch (error) {
+                    console.error('Error sending message: ', error);
+                    message.channel.send('Error occurred while sending message! Try again later.');
+                }
             });
         } catch (error) {
             console.error('Error creating ticket channel: ', error);
