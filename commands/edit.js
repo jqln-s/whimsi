@@ -69,10 +69,18 @@ export default {
             // Edit the messages on both sides
             const editPromises = [];
             if (userMessage) {
-                editPromises.push(userMessage.edit(`**[${message.member.roles.highest.name}]** <@${message.author.id}>: ${newMessage}`));
+                if (messageData.anonymous) {
+                    editPromises.push(userMessage.edit(newMessage));
+                } else {
+                    editPromises.push(userMessage.edit(`**[${message.member.roles.highest.name}]** <@${message.author.id}>: ${newMessage}`));
+                }
             }
             if (staffMessage) {
-                editPromises.push(staffMessage.edit(`\`${messageData.message_number}\` **${message.author.username}**: ${newMessage}`));
+                if (messageData.anonymous) {
+                    editPromises.push(staffMessage.edit(newMessage));
+                } else {
+                    editPromises.push(staffMessage.edit(`\`${messageData.message_number}\` **${message.author.username}**: ${newMessage}`));
+                }
             }
 
             await Promise.all(editPromises);

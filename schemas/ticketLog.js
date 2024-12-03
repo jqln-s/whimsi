@@ -31,6 +31,10 @@ const ticketLogSchema = new Schema({
             staff_message_id: {
                 type: String,
                 required: false
+            },
+            anonymous: {
+                type: Boolean,
+                required: false
             }
         }
     ],

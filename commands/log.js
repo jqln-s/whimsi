@@ -29,7 +29,11 @@ export default {
             log.messages.forEach(msg => {
                 const timestamp = new Date(msg.timestamp).toLocaleString();
                 const messageNumber = msg.message_number ? `#${msg.message_number}` : '-';
-                logText += `[${timestamp}] ${messageNumber} [${msg.username}]: ${msg.message}\n`;
+                if (msg.anonymous) {
+                    logText += `[${timestamp}] ${messageNumber} [${msg.username} (Anon)]: ${msg.message}\n`;
+                } else {
+                    logText += `[${timestamp}] ${messageNumber} [${msg.username}]: ${msg.message}\n`;
+                }
             });
 
             if (!logText) {

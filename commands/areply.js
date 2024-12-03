@@ -2,7 +2,7 @@ import TicketLog from '../schemas/ticketLog.js';
 
 export default {
     data: {
-        name: ['reply', 'r'],
+        name: ['areply', 'ar'],
         deleteMessage: true
     },
     async execute(message) {
@@ -15,7 +15,7 @@ export default {
         
         // Ensure the response is not empty
         if (!response) {
-            return message.channel.send('Usage: !reply <response>');
+            return message.channel.send('Usage: !areply <response>');
         }
 
         // Retrieve the user associated with the ticket channel (stored in the channel's topic)
@@ -39,10 +39,10 @@ export default {
         const staffMessages = ticket.messages.filter(msg => msg.message_number !== undefined);
         const messageNumber = staffMessages.length > 0 ? staffMessages[staffMessages.length - 1].message_number + 1 : 1;
         
-        // Send the response to the user (mentioning the user and including the response)
+        // Send the anonymous response to the user
         let userMessage;
         try {
-            userMessage = await user.send(`**[${message.member.roles.highest.name}]** <@${message.author.id}>: ${response}`);
+            userMessage = await user.send(response);
         } catch (error) {
             console.error('Error sending message to user:', error);
             return message.channel.send('Failed to send the response to the user.');
@@ -51,7 +51,7 @@ export default {
         // Reply to the interaction in the channel, visible to staff
         let staffMessage;
         try {
-            staffMessage = await message.channel.send(`\`${messageNumber}\` **${message.author.username}**: ${response}`);
+            staffMessage = await message.channel.send(`\`${messageNumber}\` ${response}`);
         } catch (error) {
             console.error('Error sending message to staff channel:', error);
             return message.channel.send('Failed to send the response in the staff channel.');
@@ -73,7 +73,7 @@ export default {
                             message_number: messageNumber,
                             user_message_id: userMessage.id,
                             staff_message_id: staffMessage.id,
-                            anonymous: false
+                            anonymous: true
                         }
                     }
                 },
