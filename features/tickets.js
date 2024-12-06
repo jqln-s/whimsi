@@ -27,6 +27,11 @@ export default async (client) => {
             }
         }
 
+        // Reject messages longer than 2000 characters
+        if (content.length >= 2000) {
+            return message.channel.send("Message must be less than 2000 characters!");
+        }
+
         // Handle existing ticket
         if (existingTicket) {
             try {
