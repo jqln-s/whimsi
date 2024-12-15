@@ -23,7 +23,7 @@ export default async (client) => {
         let content = message.content;
         if (message.attachments) {
             for (const attachment of message.attachments) {
-                content += attachment[1].url;
+                content += attachment[1].url + ' ';
             }
         }
 
