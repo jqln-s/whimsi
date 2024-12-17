@@ -46,7 +46,7 @@ export default async (client) => {
 
             try {
                 // Send the closing message if user is found
-                if (!user) {
+                if (!user || !user.dmChannel) {
                     console.error('User not found.');
                 } else {
                     await user.send({ embeds: [thumbnailEmbed, userEmbed] });
