@@ -52,8 +52,6 @@ export default async (client) => {
                     await user.send({ embeds: [thumbnailEmbed, userEmbed] });
                 }
 
-                await channel.delete(); // Delete the ticket channel
-
                 // Update the ticket log in the database
                 await TicketLog.findOneAndUpdate(
                     {
@@ -65,6 +63,8 @@ export default async (client) => {
                         open: false
                     }
                 );
+
+                await channel.delete(); // Delete the ticket channel
 
                 // Delete the timeout 
                 await Timeout.deleteOne({ ticket_id: timeout.ticket_id });
