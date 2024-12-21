@@ -9,6 +9,10 @@ const timeoutSchema = new Schema({
     execute_at: {
         type: Number,
         required: true
+    },
+    ticket_type: {
+        type: String,
+        required: true
     }
 });
 

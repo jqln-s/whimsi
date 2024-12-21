@@ -7,7 +7,8 @@ export default {
             // Create a new timeout
             const timeout = new Timeout({
                 ticket_id: channelID,
-                execute_at: Date.now() + cooldown
+                execute_at: Date.now() + cooldown,
+                ticket_type: process.env.BOT_TYPE
             });
             await timeout.save();
         } catch (error) {
@@ -17,7 +18,7 @@ export default {
 
     // Retrieve the timeout associated with a specific channel
     async getTimeout(channelID) {
-        const timeout = await Timeout.findOne({ ticket_id: channelID });
+        const timeout = await Timeout.findOne({ ticket_id: channelID, ticket_type: process.env.BOT_TYPE });
         return timeout;
     },
 
@@ -25,7 +26,7 @@ export default {
     async deleteTimeout(channelID) {
         if (await this.getTimeout(channelID)) {
             try {
-                await Timeout.deleteOne({ ticket_id: channelID });
+                await Timeout.deleteOne({ ticket_id: channelID, ticket_type: process.env.BOT_TYPE });
             } catch (error) {
                 console.error('Error while deleting timeout: ', error);
             }

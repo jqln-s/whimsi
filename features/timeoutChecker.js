@@ -25,7 +25,8 @@ export default async (client) => {
         const activeTimeouts = await Timeout.find({
             execute_at: {
                 $lt: Date.now()
-            }
+            },
+            ticket_type: process.env.BOT_TYPE
         });
 
         for (const timeout of activeTimeouts) {
@@ -36,7 +37,7 @@ export default async (client) => {
             // Exit if no channel
             if (!channel) {
                 console.error('Channel not found.');
-                await Timeout.deleteOne({ ticket_id: timeout.ticket_id });
+                await Timeout.deleteOne({ ticket_id: timeout.ticket_id, ticket_type: process.env.BOT_TYPE });
                 continue;
             }
 
@@ -73,7 +74,7 @@ export default async (client) => {
                 await channel.delete(); // Delete the ticket channel
 
                 // Delete the timeout 
-                await Timeout.deleteOne({ ticket_id: timeout.ticket_id });
+                await Timeout.deleteOne({ ticket_id: timeout.ticket_id, ticket_type: process.env.BOT_TYPE });
             } catch (error) {
                 console.error('Error during ticket closure:', error);
             }
