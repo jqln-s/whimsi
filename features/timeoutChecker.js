@@ -18,8 +18,15 @@ export default async (client) => {
             'If you have further concerns, you can create a new ticket by messaging this bot again.'
         )
         .setImage('https://i.imgur.com/LRS6uCl.png');
-
-
+    const applicationEmbed = new EmbedBuilder()
+        .setColor(0x69e7e6)
+        .setTitle('⋆｡‧˚ʚ Application Ticket ɞ˚‧｡⋆')
+        .setDescription(
+            '**Thank you** again for applying to Whimsi Woods staff.\n\n' +
+            'If you have further concerns, you can create a new ticket by messaging our ticket bots.'
+        )
+        .setImage('https://i.imgur.com/LRS6uCl.png')
+    
     async function checkTimeout() {
         // Find all active timeouts with a timestamp less than the current time
         const activeTimeouts = await Timeout.find({
@@ -50,7 +57,11 @@ export default async (client) => {
                 if (!user || !user.dmChannel) {
                     console.error('User not found.');
                 } else {
-                    await user.send({ embeds: [thumbnailEmbed, userEmbed] });
+                    if (process.env.BOT_TYPE == 'Applications') {
+                        await user.send({ embeds: [thumbnailEmbed, applicationEmbed] });
+                    } else {
+                        await user.send({ embeds: [thumbnailEmbed, userEmbed] });
+                    }
                 }
 
                 // Update the ticket log in the database

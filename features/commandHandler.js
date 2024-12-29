@@ -14,6 +14,9 @@ export default async (client) => {
 
         if (!command) return;  // Exit if the command is not found
 
+        // Exit if incorrect bot is used
+        if (command.data.botType && command.data.botType !== process.env.BOT_TYPE) return;
+
         // Check for permissions
         if (command.data.permission && !message.member.permissions.has(command.data.permission)) {
             return message.reply(`You do not have permission to use the \`${commandName}\` command. Required permission: \`${command.data.permission}\``);

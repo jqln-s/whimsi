@@ -52,7 +52,23 @@ export default {
             )
             .setImage('https://i.imgur.com/LRS6uCl.png'); // Image in the embed
     
+        const applicationEmbed = new EmbedBuilder()
+            .setColor(0x69e7e6)
+            .setTitle('⋆｡‧˚ʚ Application Ticket ɞ˚‧｡⋆')
+            .setDescription(
+                '**Thank you** for submitting an application. Admin+ are the only ones who can see these tickets.\n\n' +
+                '<:whimsi_arrow:1299213631397036105> Make sure your document access is set to \'anyone with link\'\n\n' +
+                'Our higher up team will be with you as soon as possible. Thanks for your continued patience!' // Instructions for higher-up support tickets
+            )
+            .setImage('https://i.imgur.com/LRS6uCl.png');
+            
         // Return the appropriate embed based on the BOT_TYPE environment variable
-        return process.env.BOT_TYPE === 'General' ? generalEmbed : higherUpEmbed;
+        if (process.env.BOT_TYPE === 'General') {
+            return generalEmbed;
+        } else if (process.env.BOT_TYPE === 'Higher Up') {
+            return higherUpEmbed;
+        } else {
+            return applicationEmbed;
+        }
     }
 };
